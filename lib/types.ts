@@ -12,6 +12,20 @@ export interface Landlord {
   profileImage?: string | null;
 }
 
+export interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  tenantId: string;
+  tenant?: {
+    id: string;
+    name: string;
+    profileImage?: string | null;
+  };
+  propertyId: string;
+  createdAt: string;
+}
+
 export interface Property {
   id: string;
   title: string;
@@ -27,6 +41,7 @@ export interface Property {
   landlord?: Landlord;
   categoryId: string;
   category?: Category;
+  reviews?: Review[];
   createdAt: string;
   updatedAt: string;
 }
