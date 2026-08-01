@@ -21,11 +21,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/service/logout";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { NavbarProps } from "@/lib/types";
+import { logout } from "@/app/service/logout";
 
 const navLinks = [
   { label: "Home", href: "/" },
