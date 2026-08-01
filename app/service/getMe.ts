@@ -14,11 +14,8 @@ export const getMe = async () => {
     };
   }
 
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/me`, {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/me`, {
     headers: {
-      //   Authorization: accessToken as unknown as string,
-      // Authorization: `${accessToken}`,
-      //   Authorization: `Bearer${accessToken}`,
       Cookie: `accessToken=${accessToken}`,
     },
     cache: "force-cache",
@@ -27,7 +24,7 @@ export const getMe = async () => {
       tags: ["my-profile"],
     },
   });
-  const result = res.json();
+  const result = await res.json();
   // console.log(result);
   return result;
 };

@@ -35,10 +35,9 @@ export default function DashboardSidebar({ user }: NavbarProps) {
   // const navItems = sidebarMenuItems.USER;
 
   let navItems: ISidebarItem[] = [];
-
-  if (user.data.profile.role === "USER") {
+  if (user.data.profile.role === "TENANT") {
     navItems = sidebarMenuItems.USER;
-  } else if (user.data.profile.role === "AUTHOR") {
+  } else if (user.data.profile.role === "LANDLORD") {
     navItems = sidebarMenuItems.AUTHOR;
   } else if (user.data.profile.role === "ADMIN") {
     navItems = sidebarMenuItems.ADMIN;
@@ -69,11 +68,12 @@ export default function DashboardSidebar({ user }: NavbarProps) {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={pathname === item.href}>
-                    <Link href={item.href}>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </Link>
+                  <SidebarMenuButton
+                    render={<Link href={item.href} />}
+                    isActive={pathname === item.href}
+                  >
+                    <item.icon />
+                    <span>{item.label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

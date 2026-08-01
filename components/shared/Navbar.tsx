@@ -86,17 +86,19 @@ export function Navbar({ user }: NavbarProps) {
         {/* User dropdown */}
         {user.success ? (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="relative size-9 rounded-full p-0"
-              >
-                <Avatar className="size-9">
-                  <AvatarImage src="/avatar.jpg" alt="User avatar" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <span className="sr-only">Open user menu</span>
-              </Button>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  className="relative size-9 rounded-full p-0"
+                />
+              }
+            >
+              <Avatar className="size-9">
+                <AvatarImage src="/avatar.jpg" alt="User avatar" />
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <span className="sr-only">Open user menu</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuGroup>
@@ -116,11 +118,12 @@ export function Navbar({ user }: NavbarProps) {
                 {userMenuItems.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <DropdownMenuItem key={item.href} asChild>
-                      <Link href={item.href}>
-                        <Icon data-icon="inline-start" />
-                        {item.label}
-                      </Link>
+                    <DropdownMenuItem
+                      key={item.href}
+                      render={<Link href={item.href} />}
+                    >
+                      <Icon data-icon="inline-start" />
+                      {item.label}
                     </DropdownMenuItem>
                   );
                 })}
