@@ -4,14 +4,14 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { deletePropertyAction } from "../_actions/propertyAction";
 
 const DeletePropertyButton = ({ propertyId }: { propertyId: string }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const handleDelete = () => {
-    if (!confirm("Delete this property? This cannot be undone.")) return;
+  const performDelete = () => {
     startTransition(async () => {
       const result = await deletePropertyAction(propertyId);
       if (result.success) {
@@ -24,14 +24,16 @@ const DeletePropertyButton = ({ propertyId }: { propertyId: string }) => {
   };
 
   return (
-    <Button
-      variant="destructive"
-      size="sm"
-      onClick={handleDelete}
-      disabled={isPending}
-    >
-      {isPending ? "Deleting..." : "Delete"}
-    </Button>
+    <ConfirmDialog
+      trigger={<Button variant="destructive" size="sm" disabled={isPending} />}
+      triggerLabel={isPending ? "Deleting..." : "Delete"}
+      title="Delete this property?"
+      description="This cannot be undone."
+      confirmLabel="Delete"
+      confirmVariant="destructive"
+      onConfirm={performDelete}
+      loading={isPending}
+    />
   );
 };
 
