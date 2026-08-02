@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,23 +27,34 @@ const PropertyForm = ({
   submitLabel: string;
 }) => {
   const [state, formAction, pending] = useActionState(action, null);
+  // Bumped whenever a submission fails, forcing the form to remount so
+  // uncontrolled inputs pick up the resubmitted values instead of going
+  // blank — React resets a form's fields after any action submission,
+  // success or failure, since it's still a native <form> under the hood.
+  const [formKey, setFormKey] = useState(0);
 
   useEffect(() => {
     if (state && !state.success) {
       toast.error(state.message);
+      setFormKey((key) => key + 1);
     }
   }, [state]);
 
   const errors = state && !state.success ? state.errors : undefined;
+  const values = state && !state.success ? state.values : undefined;
 
   return (
-    <form action={formAction} className="max-w-xl space-y-4">
+    <form
+      key={formKey}
+      action={formAction}
+      className="max-w-xl space-y-4"
+    >
       <div className="space-y-1">
         <Label htmlFor="title">Title</Label>
         <Input
           id="title"
           name="title"
-          defaultValue={defaultValues?.title}
+          defaultValue={values?.title ?? defaultValues?.title}
           aria-invalid={!!errors?.title}
         />
         <FieldError message={errors?.title} />
@@ -54,7 +65,7 @@ const PropertyForm = ({
         <Textarea
           id="description"
           name="description"
-          defaultValue={defaultValues?.description}
+          defaultValue={values?.description ?? defaultValues?.description}
           rows={4}
           aria-invalid={!!errors?.description}
         />
@@ -67,7 +78,7 @@ const PropertyForm = ({
           <Input
             id="address"
             name="address"
-            defaultValue={defaultValues?.address}
+            defaultValue={values?.address ?? defaultValues?.address}
             aria-invalid={!!errors?.address}
           />
           <FieldError message={errors?.address} />
@@ -77,7 +88,7 @@ const PropertyForm = ({
           <Input
             id="city"
             name="city"
-            defaultValue={defaultValues?.city}
+            defaultValue={values?.city ?? defaultValues?.city}
             aria-invalid={!!errors?.city}
           />
           <FieldError message={errors?.city} />
@@ -91,7 +102,7 @@ const PropertyForm = ({
             id="rent"
             name="rent"
             type="number"
-            defaultValue={defaultValues?.rent}
+            defaultValue={values?.rent ?? defaultValues?.rent}
             aria-invalid={!!errors?.rent}
           />
           <FieldError message={errors?.rent} />
@@ -102,7 +113,7 @@ const PropertyForm = ({
             id="bedrooms"
             name="bedrooms"
             type="number"
-            defaultValue={defaultValues?.bedrooms}
+            defaultValue={values?.bedrooms ?? defaultValues?.bedrooms}
             aria-invalid={!!errors?.bedrooms}
           />
           <FieldError message={errors?.bedrooms} />
@@ -113,7 +124,7 @@ const PropertyForm = ({
             id="bathrooms"
             name="bathrooms"
             type="number"
-            defaultValue={defaultValues?.bathrooms}
+            defaultValue={values?.bathrooms ?? defaultValues?.bathrooms}
             aria-invalid={!!errors?.bathrooms}
           />
           <FieldError message={errors?.bathrooms} />
@@ -125,7 +136,7 @@ const PropertyForm = ({
         <select
           id="categoryId"
           name="categoryId"
-          defaultValue={defaultValues?.categoryId ?? ""}
+          defaultValue={values?.categoryId ?? defaultValues?.categoryId ?? ""}
           aria-invalid={!!errors?.categoryId}
           className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none"
         >
@@ -147,7 +158,7 @@ const PropertyForm = ({
           id="thumbnail"
           name="thumbnail"
           type="url"
-          defaultValue={defaultValues?.thumbnail ?? ""}
+          defaultValue={values?.thumbnail ?? defaultValues?.thumbnail ?? ""}
           placeholder="https://..."
           aria-invalid={!!errors?.thumbnail}
         />
@@ -160,7 +171,7 @@ const PropertyForm = ({
           <select
             id="status"
             name="status"
-            defaultValue={defaultValues.status}
+            defaultValue={values?.status ?? defaultValues.status}
             className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none"
           >
             <option value="AVAILABLE">Available</option>

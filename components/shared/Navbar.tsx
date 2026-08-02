@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { NavbarProps } from "@/lib/types";
 import { logout } from "@/app/service/logout";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -69,6 +70,8 @@ export function Navbar({ user }: NavbarProps) {
           ))}
         </ul>
 
+        <div className="flex items-center gap-2">
+        <ThemeToggle />
         {/* User dropdown */}
         {user.success ? (
           <DropdownMenu>
@@ -118,6 +121,7 @@ export function Navbar({ user }: NavbarProps) {
             <Button className="cursor-pointer">Login</Button>
           </Link>
         )}
+        </div>
       </nav>
     </header>
   );

@@ -9,11 +9,38 @@ import {
 } from "@/lib/validations/property.schema";
 import { formatZodErrors } from "@/lib/validations/formatZodErrors";
 
+export type PropertyFormValues = {
+  title: string;
+  description: string;
+  address: string;
+  city: string;
+  rent: string;
+  bedrooms: string;
+  bathrooms: string;
+  categoryId: string;
+  thumbnail: string;
+  status?: string;
+};
+
 export type PropertyActionState = {
   success: boolean;
   message: string;
   errors?: Record<string, string>;
+  values?: PropertyFormValues;
 } | null;
+
+const getRawValues = (formData: FormData): PropertyFormValues => ({
+  title: (formData.get("title") as string) ?? "",
+  description: (formData.get("description") as string) ?? "",
+  address: (formData.get("address") as string) ?? "",
+  city: (formData.get("city") as string) ?? "",
+  rent: (formData.get("rent") as string) ?? "",
+  bedrooms: (formData.get("bedrooms") as string) ?? "",
+  bathrooms: (formData.get("bathrooms") as string) ?? "",
+  categoryId: (formData.get("categoryId") as string) ?? "",
+  thumbnail: (formData.get("thumbnail") as string) ?? "",
+  status: (formData.get("status") as string) ?? undefined,
+});
 
 const buildPropertyPayload = (formData: FormData) => ({
   title: formData.get("title"),
@@ -31,12 +58,14 @@ export const createPropertyAction = async (
   prevState: PropertyActionState,
   formData: FormData,
 ) => {
+  const values = getRawValues(formData);
   const parsed = propertySchema.safeParse(buildPropertyPayload(formData));
   if (!parsed.success) {
     return {
       success: false,
       message: "Please fix the errors below",
       errors: formatZodErrors(parsed.error),
+      values,
     };
   }
 
@@ -60,6 +89,7 @@ export const createPropertyAction = async (
     return {
       success: false,
       message: result.message || "Failed to create property",
+      values,
     };
   }
 
@@ -72,6 +102,7 @@ export const updatePropertyAction = async (
   prevState: PropertyActionState,
   formData: FormData,
 ) => {
+  const values = getRawValues(formData);
   const parsed = updatePropertySchema.safeParse({
     ...buildPropertyPayload(formData),
     status: formData.get("status"),
@@ -81,6 +112,7 @@ export const updatePropertyAction = async (
       success: false,
       message: "Please fix the errors below",
       errors: formatZodErrors(parsed.error),
+      values,
     };
   }
 
@@ -104,6 +136,7 @@ export const updatePropertyAction = async (
     return {
       success: false,
       message: result.message || "Failed to update property",
+      values,
     };
   }
 
