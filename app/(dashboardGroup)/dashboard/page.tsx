@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { getMyRentals } from "@/app/service/getMyRentals";
 import { getMyPayments } from "@/app/service/getMyPayments";
 import PayNowButton from "./_components/PayNowButton";
+import ReviewDialog from "./_components/ReviewDialog";
 import type { RentalRequest, RentalStatus, Payment } from "@/lib/types";
 
 const rentalStatusStyles: Record<RentalStatus, string> = {
@@ -110,6 +111,12 @@ const UserDashboardPage = async () => {
                     <td className="px-4 py-3">
                       {rental.status === "APPROVED" && (
                         <PayNowButton rentalRequestId={rental.id} />
+                      )}
+                      {rental.status === "COMPLETED" && (
+                        <ReviewDialog
+                          propertyId={rental.propertyId}
+                          propertyTitle={rental.property?.title}
+                        />
                       )}
                     </td>
                   </tr>
