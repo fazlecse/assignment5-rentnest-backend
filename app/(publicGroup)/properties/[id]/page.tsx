@@ -140,7 +140,11 @@ const PropertyDetailsPage = async ({
             </p>
 
             {!token && (
-              <Button render={<Link href="/login" />} className="w-full">
+              <Button
+                nativeButton={false}
+                render={<Link href="/login" />}
+                className="w-full"
+              >
                 Login to Request
               </Button>
             )}

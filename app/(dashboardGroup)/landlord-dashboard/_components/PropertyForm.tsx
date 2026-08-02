@@ -9,6 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Category, Property } from "@/lib/types";
 import type { PropertyActionState } from "../_actions/propertyAction";
 
+const FieldError = ({ message }: { message?: string }) =>
+  message ? <p className="text-sm text-destructive">{message}</p> : null;
+
 const PropertyForm = ({
   action,
   categories,
@@ -31,6 +34,8 @@ const PropertyForm = ({
     }
   }, [state]);
 
+  const errors = state && !state.success ? state.errors : undefined;
+
   return (
     <form action={formAction} className="max-w-xl space-y-4">
       <div className="space-y-1">
@@ -39,9 +44,9 @@ const PropertyForm = ({
           id="title"
           name="title"
           defaultValue={defaultValues?.title}
-          minLength={5}
-          required
+          aria-invalid={!!errors?.title}
         />
+        <FieldError message={errors?.title} />
       </div>
 
       <div className="space-y-1">
@@ -50,10 +55,10 @@ const PropertyForm = ({
           id="description"
           name="description"
           defaultValue={defaultValues?.description}
-          minLength={20}
           rows={4}
-          required
+          aria-invalid={!!errors?.description}
         />
+        <FieldError message={errors?.description} />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -63,8 +68,9 @@ const PropertyForm = ({
             id="address"
             name="address"
             defaultValue={defaultValues?.address}
-            required
+            aria-invalid={!!errors?.address}
           />
+          <FieldError message={errors?.address} />
         </div>
         <div className="space-y-1">
           <Label htmlFor="city">City</Label>
@@ -72,8 +78,9 @@ const PropertyForm = ({
             id="city"
             name="city"
             defaultValue={defaultValues?.city}
-            required
+            aria-invalid={!!errors?.city}
           />
+          <FieldError message={errors?.city} />
         </div>
       </div>
 
@@ -84,10 +91,10 @@ const PropertyForm = ({
             id="rent"
             name="rent"
             type="number"
-            min={1}
             defaultValue={defaultValues?.rent}
-            required
+            aria-invalid={!!errors?.rent}
           />
+          <FieldError message={errors?.rent} />
         </div>
         <div className="space-y-1">
           <Label htmlFor="bedrooms">Bedrooms</Label>
@@ -95,10 +102,10 @@ const PropertyForm = ({
             id="bedrooms"
             name="bedrooms"
             type="number"
-            min={1}
             defaultValue={defaultValues?.bedrooms}
-            required
+            aria-invalid={!!errors?.bedrooms}
           />
+          <FieldError message={errors?.bedrooms} />
         </div>
         <div className="space-y-1">
           <Label htmlFor="bathrooms">Bathrooms</Label>
@@ -106,10 +113,10 @@ const PropertyForm = ({
             id="bathrooms"
             name="bathrooms"
             type="number"
-            min={1}
             defaultValue={defaultValues?.bathrooms}
-            required
+            aria-invalid={!!errors?.bathrooms}
           />
+          <FieldError message={errors?.bathrooms} />
         </div>
       </div>
 
@@ -119,7 +126,7 @@ const PropertyForm = ({
           id="categoryId"
           name="categoryId"
           defaultValue={defaultValues?.categoryId ?? ""}
-          required
+          aria-invalid={!!errors?.categoryId}
           className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none"
         >
           <option value="" disabled>
@@ -131,6 +138,7 @@ const PropertyForm = ({
             </option>
           ))}
         </select>
+        <FieldError message={errors?.categoryId} />
       </div>
 
       <div className="space-y-1">
@@ -141,7 +149,9 @@ const PropertyForm = ({
           type="url"
           defaultValue={defaultValues?.thumbnail ?? ""}
           placeholder="https://..."
+          aria-invalid={!!errors?.thumbnail}
         />
+        <FieldError message={errors?.thumbnail} />
       </div>
 
       {defaultValues && (

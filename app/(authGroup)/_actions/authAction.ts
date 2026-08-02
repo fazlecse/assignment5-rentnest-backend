@@ -3,33 +3,49 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { loginSchema, registerSchema } from "@/lib/validations/auth.schema";
+import { formatZodErrors } from "@/lib/validations/formatZodErrors";
 
-type loginState = {
-  success: true;
-  statusCode: string;
-  message: string;
-  data: {
-    accessToken: string;
-    refreshToken: string;
-  };
-};
+type loginState =
+  | {
+      success: true;
+      statusCode: string;
+      message: string;
+      data: {
+        accessToken: string;
+        refreshToken: string;
+      };
+    }
+  | {
+      success: false;
+      message: string;
+      errors?: Record<string, string>;
+    };
+
 export const loginAction = async (
-  prevState: loginState,
+  prevState: loginState | false,
   formData: FormData,
 ) => {
-  const email = formData.get("email");
-  const password = formData.get("password");
   const payload = {
-    email,
-    password,
+    email: formData.get("email"),
+    password: formData.get("password"),
   };
+
+  const parsed = loginSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      success: false as const,
+      message: "Please fix the errors below",
+      errors: formatZodErrors(parsed.error),
+    };
+  }
 
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(parsed.data),
   });
   const result = await res.json();
   if (result.success) {
@@ -62,6 +78,7 @@ type registerState =
   | {
       success: boolean;
       message: string;
+      errors?: Record<string, string>;
     }
   | false;
 
@@ -76,6 +93,15 @@ export const registerAction = async (
     role: formData.get("role"),
   };
 
+  const parsed = registerSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: "Please fix the errors below",
+      errors: formatZodErrors(parsed.error),
+    };
+  }
+
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/auth/register`,
     {
@@ -83,7 +109,7 @@ export const registerAction = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(parsed.data),
     },
   );
   const result = await res.json();

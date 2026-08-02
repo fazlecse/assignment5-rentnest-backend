@@ -28,6 +28,8 @@ const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
     }
   }, [state]);
 
+  const errors = state && !state.success ? state.errors : undefined;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button className="w-full" />}>
@@ -41,7 +43,15 @@ const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
           <input type="hidden" name="propertyId" value={propertyId} />
           <div className="space-y-1">
             <Label htmlFor="startDate">Move-in date</Label>
-            <Input id="startDate" name="startDate" type="date" required />
+            <Input
+              id="startDate"
+              name="startDate"
+              type="date"
+              aria-invalid={!!errors?.startDate}
+            />
+            {errors?.startDate && (
+              <p className="text-sm text-destructive">{errors.startDate}</p>
+            )}
           </div>
           <div className="space-y-1">
             <Label htmlFor="months">Duration (months)</Label>
@@ -49,10 +59,12 @@ const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
               id="months"
               name="months"
               type="number"
-              min={1}
               defaultValue={1}
-              required
+              aria-invalid={!!errors?.months}
             />
+            {errors?.months && (
+              <p className="text-sm text-destructive">{errors.months}</p>
+            )}
           </div>
           <Button type="submit" disabled={pending} className="w-full">
             {pending ? "Submitting..." : "Submit Request"}

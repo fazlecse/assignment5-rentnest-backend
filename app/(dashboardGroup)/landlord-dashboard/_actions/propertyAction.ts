@@ -3,28 +3,43 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidateTag } from "next/cache";
+import {
+  propertySchema,
+  updatePropertySchema,
+} from "@/lib/validations/property.schema";
+import { formatZodErrors } from "@/lib/validations/formatZodErrors";
 
-export type PropertyActionState = { success: boolean; message: string } | null;
+export type PropertyActionState = {
+  success: boolean;
+  message: string;
+  errors?: Record<string, string>;
+} | null;
 
-const buildPropertyPayload = (formData: FormData) => {
-  const thumbnail = formData.get("thumbnail");
-  return {
-    title: formData.get("title"),
-    description: formData.get("description"),
-    address: formData.get("address"),
-    city: formData.get("city"),
-    rent: Number(formData.get("rent")),
-    bedrooms: Number(formData.get("bedrooms")),
-    bathrooms: Number(formData.get("bathrooms")),
-    categoryId: formData.get("categoryId"),
-    ...(thumbnail ? { thumbnail } : {}),
-  };
-};
+const buildPropertyPayload = (formData: FormData) => ({
+  title: formData.get("title"),
+  description: formData.get("description"),
+  address: formData.get("address"),
+  city: formData.get("city"),
+  rent: Number(formData.get("rent")),
+  bedrooms: Number(formData.get("bedrooms")),
+  bathrooms: Number(formData.get("bathrooms")),
+  categoryId: formData.get("categoryId"),
+  thumbnail: formData.get("thumbnail"),
+});
 
 export const createPropertyAction = async (
   prevState: PropertyActionState,
   formData: FormData,
 ) => {
+  const parsed = propertySchema.safeParse(buildPropertyPayload(formData));
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: "Please fix the errors below",
+      errors: formatZodErrors(parsed.error),
+    };
+  }
+
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
 
@@ -36,7 +51,7 @@ export const createPropertyAction = async (
         "Content-Type": "application/json",
         Cookie: `accessToken=${accessToken}`,
       },
-      body: JSON.stringify(buildPropertyPayload(formData)),
+      body: JSON.stringify(parsed.data),
     },
   );
   const result = await res.json();
@@ -57,13 +72,20 @@ export const updatePropertyAction = async (
   prevState: PropertyActionState,
   formData: FormData,
 ) => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
-
-  const payload = {
+  const parsed = updatePropertySchema.safeParse({
     ...buildPropertyPayload(formData),
     status: formData.get("status"),
-  };
+  });
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: "Please fix the errors below",
+      errors: formatZodErrors(parsed.error),
+    };
+  }
+
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
 
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/landlord/properties/${propertyId}`,
@@ -73,7 +95,7 @@ export const updatePropertyAction = async (
         "Content-Type": "application/json",
         Cookie: `accessToken=${accessToken}`,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(parsed.data),
     },
   );
   const result = await res.json();

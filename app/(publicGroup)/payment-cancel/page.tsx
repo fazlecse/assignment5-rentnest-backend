@@ -16,7 +16,11 @@ const PaymentCancelPage = () => {
           anytime from your dashboard.
         </p>
 
-        <Button render={<Link href="/dashboard" />} className="w-full">
+        <Button
+          nativeButton={false}
+          render={<Link href="/dashboard" />}
+          className="w-full"
+        >
           Back to Dashboard
         </Button>
       </Card>

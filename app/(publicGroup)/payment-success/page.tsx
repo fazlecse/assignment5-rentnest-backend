@@ -45,7 +45,11 @@ const PaymentSuccessPage = async ({
           </p>
         )}
 
-        <Button render={<Link href="/dashboard" />} className="w-full">
+        <Button
+          nativeButton={false}
+          render={<Link href="/dashboard" />}
+          className="w-full"
+        >
           Go to Dashboard
         </Button>
       </Card>
