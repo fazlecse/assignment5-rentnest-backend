@@ -57,7 +57,7 @@ export async function proxy(request: NextRequest) {
     if (userRole === "TENANT") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     } else if (userRole === "LANDLORD") {
-      return NextResponse.redirect(new URL("/landlord-dashboard"));
+      return NextResponse.redirect(new URL("/landlord-dashboard", request.url));
     } else if (userRole === "ADMIN") {
       return NextResponse.redirect(new URL("/admin-dashboard", request.url));
     } else {

@@ -10,6 +10,9 @@ export const getProperty = async ({
   if (query && query.categoryId) {
     params.set("categoryId", query.categoryId as string);
   }
+  if (query && query.limit) {
+    params.set("limit", query.limit as string);
+  }
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/properties?${params.toString()}`,
     {
