@@ -22,6 +22,7 @@ import { logout } from "@/app/service/logout";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Properties", href: "/properties" },
+  { label: "Categories", href: "/category" },
 ];
 
 const dashboardHrefByRole: Record<string, string> = {

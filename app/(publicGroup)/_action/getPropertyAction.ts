@@ -7,6 +7,9 @@ export const getProperty = async ({
   if (query && query.searchTerm) {
     params.set("searchTerm", query.searchTerm as string);
   }
+  if (query && query.categoryId) {
+    params.set("categoryId", query.categoryId as string);
+  }
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/properties?${params.toString()}`,
     {
@@ -18,7 +21,6 @@ export const getProperty = async ({
     },
   );
   const result = await res.json();
-  console.log(result,'0000000000000')
   return result;
 };
 
