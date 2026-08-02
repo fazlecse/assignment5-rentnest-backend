@@ -84,6 +84,20 @@ export interface Payment {
   updatedAt: string;
 }
 
+export type UserRole = "ADMIN" | "LANDLORD" | "TENANT";
+export type UserStatus = "ACTIVE" | "BLOCKED";
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  profileImage?: string | null;
+  role: UserRole;
+  status: UserStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 type IUser = {
   success: boolean;
   statusCode: number;
