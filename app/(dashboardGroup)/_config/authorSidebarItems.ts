@@ -1,15 +1,20 @@
 import { ISidebarItem } from "@/lib/types";
-import { FileText, LayoutDashboard } from "lucide-react";
+import { Building2, ClipboardList, LayoutDashboard } from "lucide-react";
 
 export const AUTHOR_SIDEBAR_ITEMS: ISidebarItem[] = [
   {
     label: "Dashboard",
-    href: "/author-dashboard",
+    href: "/landlord-dashboard",
     icon: LayoutDashboard,
   },
   {
-    label: "My Posts",
-    href: "/author-dashboard/my-posts",
-    icon: FileText,
+    label: "My Properties",
+    href: "/landlord-dashboard/properties",
+    icon: Building2,
+  },
+  {
+    label: "Requests",
+    href: "/landlord-dashboard/requests",
+    icon: ClipboardList,
   },
 ];

@@ -53,6 +53,11 @@ export type RentalStatus = "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED";
 export interface RentalRequest {
   id: string;
   tenantId: string;
+  tenant?: {
+    id: string;
+    name: string;
+    email: string;
+  };
   propertyId: string;
   property: Property;
   startDate: string;
