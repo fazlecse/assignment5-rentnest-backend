@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  User,
-  Settings,
-  CreditCard,
-  LifeBuoy,
-  LogOut,
-} from "lucide-react";
+import { LayoutDashboard, LogOut } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { NavbarProps } from "@/lib/types";
@@ -29,31 +21,24 @@ import { logout } from "@/app/service/logout";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
-  { label: "Contact", href: "/contact" },
-  { label: "News", href: "/news" },
-  { label: "Premium", href: "/premium" },
+  { label: "Properties", href: "/properties" },
 ];
 
-const userMenuItems = [
-  { label: "Profile", href: "/profile", icon: User },
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Billing", href: "/billing", icon: CreditCard },
-  { label: "Settings", href: "/settings", icon: Settings },
-  { label: "Support", href: "/support", icon: LifeBuoy },
-];
+const dashboardHrefByRole: Record<string, string> = {
+  ADMIN: "/admin-dashboard",
+  LANDLORD: "/landlord-dashboard",
+  TENANT: "/dashboard",
+};
 
 export function Navbar({ user }: NavbarProps) {
   const router = useRouter();
-  const [isLogout, setIsLogout] = useState(false);
-  const handleUserMenuAction = async (action: string) => {
-    console.log("cookie deleted");
-    if (action === "logout") {
-      await logout();
-      toast.success("User logged out successfully!");
-      router.push("/login");
-    }
+  const role = user.data?.profile.role;
+  const dashboardHref = dashboardHrefByRole[role ?? ""] ?? "/dashboard";
+
+  const handleLogout = async () => {
+    await logout();
+    toast.success("User logged out successfully!");
+    router.push("/login");
   };
 
   return (
@@ -62,10 +47,10 @@ export function Navbar({ user }: NavbarProps) {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <span className="text-sm font-bold">N</span>
+            <span className="text-sm font-bold">R</span>
           </div>
           <span className="text-lg font-semibold tracking-tight">
-            Nextjs Press
+            RentNest
           </span>
         </Link>
 
@@ -115,26 +100,13 @@ export function Navbar({ user }: NavbarProps) {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                {userMenuItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <DropdownMenuItem
-                      key={item.href}
-                      render={<Link href={item.href} />}
-                    >
-                      <Icon data-icon="inline-start" />
-                      {item.label}
-                    </DropdownMenuItem>
-                  );
-                })}
+                <DropdownMenuItem render={<Link href={dashboardHref} />}>
+                  <LayoutDashboard data-icon="inline-start" />
+                  Dashboard
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={async () => {
-                  await handleUserMenuAction("logout");
-                }}
-              >
+              <DropdownMenuItem variant="destructive" onClick={handleLogout}>
                 <LogOut data-icon="inline-start" />
                 Sign out
               </DropdownMenuItem>

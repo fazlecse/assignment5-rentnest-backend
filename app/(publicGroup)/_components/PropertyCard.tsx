@@ -13,7 +13,7 @@ const statusStyles: Record<Property["status"], string> = {
 const PropertyCard = ({ property }: { property: Property }) => {
 
   return (
-    <Link href={`/property/${property.id}`}>
+    <Link href={`/properties/${property.id}`}>
       <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
         <div className="relative h-48 w-full bg-muted">
           {property.thumbnail ? (

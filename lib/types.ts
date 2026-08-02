@@ -48,6 +48,37 @@ export interface Property {
   createdAt: string;
   updatedAt: string;
 }
+export type RentalStatus = "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED";
+
+export interface RentalRequest {
+  id: string;
+  tenantId: string;
+  propertyId: string;
+  property: Property;
+  startDate: string;
+  months: number;
+  status: RentalStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type PaymentStatus = "PENDING" | "PAID" | "FAILED";
+export type PaymentProvider = "STRIPE" | "SSLCOMMERZ";
+
+export interface Payment {
+  id: string;
+  rentalRequestId: string;
+  rentalRequest: RentalRequest;
+  stripeSessionId?: string | null;
+  transactionId?: string | null;
+  amount: number;
+  provider: PaymentProvider;
+  status: PaymentStatus;
+  paidAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 type IUser = {
   success: boolean;
   statusCode: number;
