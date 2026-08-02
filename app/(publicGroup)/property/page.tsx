@@ -3,7 +3,7 @@ import PropertiesSkeleton from "../_components/PropertiesSkeleton";
 import PropertyList from "../_components/PropertyList";
 import { SearchBar } from "../_components/SearchBar";
 
-const PropertiesPage = async ({
+const PropertyPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -26,4 +26,4 @@ const PropertiesPage = async ({
   );
 };
 
-export default PropertiesPage;
+export default PropertyPage;

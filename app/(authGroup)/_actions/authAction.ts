@@ -51,7 +51,7 @@ export const loginAction = async (
     } else if (decodedToken.role === "ADMIN") {
       redirect("/admin-dashboard");
     } else if (decodedToken.role === "LANDLORD") {
-      redirect("/landloard-dashboard");
+      redirect("/landlord-dashboard");
     }
   }
 

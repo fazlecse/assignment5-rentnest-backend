@@ -4,7 +4,7 @@ import { jwtUtils } from "./utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
 
 const AUTH_ROUTES = ["/login", "/register"];
-const PUBLIC_ROUTES = ["/", "/properties"];
+const PUBLIC_ROUTES = ["/", "/property", "/category"];
 // This function can be marked `async` if using `await` inside
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -18,18 +18,28 @@ export function proxy(request: NextRequest) {
   if (decodedAccessToken?.success && decodedAccessToken.data) {
     userRole = (decodedAccessToken.data as JwtPayload).role;
   }
-  console.log(userRole, "userRole");
   // user is logged in and trying to access login or register page, redirect to dashboard or root homepage
   if (accessToken && AUTH_ROUTES.includes(pathname)) {
     if (userRole === "TENANT") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
-    } else if (userRole === "LANDLOARD") {
-      return NextResponse.redirect(new URL("landloard-dashboard"));
+    } else if (userRole === "LANDLORD") {
+      return NextResponse.redirect(new URL("/landlord-dashboard"));
     } else if (userRole === "ADMIN") {
-      return NextResponse.redirect(new URL("admin-dashboard", request.url));
+      return NextResponse.redirect(new URL("/admin-dashboard", request.url));
     } else {
       return NextResponse.redirect(new URL("/", request.url));
     }
+  }
+
+  const isPublicRoute = PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+  const isAuthRoute = AUTH_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+  // Authentication pages protection : Authorization is not handled yet
+  if (!accessToken && !isPublicRoute && !isAuthRoute) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();

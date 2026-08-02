@@ -6,7 +6,6 @@ async function HomePage() {
   const user = await getMe();
   return (
     <div>
-      <Navbar user={user} />
       Hello, Nextjs!
       <h1>Home page</h1>
     </div>
