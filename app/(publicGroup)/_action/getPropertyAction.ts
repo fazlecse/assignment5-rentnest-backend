@@ -10,6 +10,27 @@ export const getProperty = async ({
   if (query && query.categoryId) {
     params.set("categoryId", query.categoryId as string);
   }
+  if (query && query.city) {
+    params.set("city", query.city as string);
+  }
+  if (query && query.minRent) {
+    params.set("minRent", query.minRent as string);
+  }
+  if (query && query.maxRent) {
+    params.set("maxRent", query.maxRent as string);
+  }
+  if (query && query.bedrooms) {
+    params.set("bedrooms", query.bedrooms as string);
+  }
+  if (query && query.bathrooms) {
+    params.set("bathrooms", query.bathrooms as string);
+  }
+  if (query && query.sortBy) {
+    params.set("sortBy", query.sortBy as string);
+  }
+  if (query && query.sortOrder) {
+    params.set("sortOrder", query.sortOrder as string);
+  }
   if (query && query.limit) {
     params.set("limit", query.limit as string);
   }
