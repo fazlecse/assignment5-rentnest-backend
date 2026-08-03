@@ -10,11 +10,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ISidebarItem, NavbarProps } from "@/lib/types";
+import { ISidebarItem } from "@/lib/types";
 import { Newspaper } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebarMenuItems } from "../_config/sidebarMenuItems";
+import { useAuth } from "@/context/AuthContext";
 
 // const navItems = [
 //   {
@@ -29,7 +30,8 @@ import { sidebarMenuItems } from "../_config/sidebarMenuItems";
 //   },
 // ];
 
-export default function DashboardSidebar({ user }: NavbarProps) {
+export default function DashboardSidebar() {
+  const user = useAuth();
   const pathname = usePathname();
 
   // const navItems = sidebarMenuItems.USER;

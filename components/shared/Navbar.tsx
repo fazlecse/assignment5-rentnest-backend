@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { NavbarProps } from "@/lib/types";
 import { logout } from "@/app/service/logout";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -32,7 +32,8 @@ const dashboardHrefByRole: Record<string, string> = {
   TENANT: "/dashboard",
 };
 
-export function Navbar({ user }: NavbarProps) {
+export function Navbar() {
+  const user = useAuth();
   const router = useRouter();
   const role = user.data?.profile.role;
   const dashboardHref = dashboardHrefByRole[role ?? ""] ?? "/dashboard";

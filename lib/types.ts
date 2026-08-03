@@ -98,7 +98,7 @@ export interface AdminUser {
   updatedAt: string;
 }
 
-type IUser = {
+export type IUser = {
   success: boolean;
   statusCode: number;
   message: string;
