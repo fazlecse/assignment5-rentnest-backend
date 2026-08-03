@@ -6,6 +6,8 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { loginSchema, registerSchema } from "@/lib/validations/auth.schema";
 import { formatZodErrors } from "@/lib/validations/formatZodErrors";
 
+export type LoginFormValues = { email: string };
+
 type loginState =
   | {
       success: true;
@@ -20,12 +22,16 @@ type loginState =
       success: false;
       message: string;
       errors?: Record<string, string>;
+      values?: LoginFormValues;
     };
 
 export const loginAction = async (
   prevState: loginState | false,
   formData: FormData,
 ) => {
+  const values: LoginFormValues = {
+    email: (formData.get("email") as string) ?? "",
+  };
   const payload = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -37,6 +43,7 @@ export const loginAction = async (
       success: false as const,
       message: "Please fix the errors below",
       errors: formatZodErrors(parsed.error),
+      values,
     };
   }
 
@@ -61,7 +68,6 @@ export const loginAction = async (
       sameSite: "lax",
     });
     const decodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
-    console.log(decodedToken, "decodedToken");
     if (decodedToken.role === "TENANT") {
       redirect("/dashboard");
     } else if (decodedToken.role === "ADMIN") {
@@ -71,14 +77,17 @@ export const loginAction = async (
     }
   }
 
-  return result;
+  return { ...result, values };
 };
+
+export type RegisterFormValues = { name: string; email: string; role: string };
 
 type registerState =
   | {
       success: boolean;
       message: string;
       errors?: Record<string, string>;
+      values?: RegisterFormValues;
     }
   | false;
 
@@ -86,6 +95,11 @@ export const registerAction = async (
   prevState: registerState,
   formData: FormData,
 ) => {
+  const values: RegisterFormValues = {
+    name: (formData.get("name") as string) ?? "",
+    email: (formData.get("email") as string) ?? "",
+    role: (formData.get("role") as string) ?? "",
+  };
   const payload = {
     name: formData.get("name"),
     email: formData.get("email"),
@@ -99,6 +113,7 @@ export const registerAction = async (
       success: false,
       message: "Please fix the errors below",
       errors: formatZodErrors(parsed.error),
+      values,
     };
   }
 
@@ -118,5 +133,5 @@ export const registerAction = async (
     redirect("/login");
   }
 
-  return result;
+  return { ...result, values };
 };

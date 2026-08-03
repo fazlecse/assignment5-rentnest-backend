@@ -16,6 +16,7 @@ import { requestRentalAction } from "../_actions/rentalAction";
 
 const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
   const [open, setOpen] = useState(false);
+  const [formKey, setFormKey] = useState(0);
   const [state, action, pending] = useActionState(requestRentalAction, null);
 
   useEffect(() => {
@@ -25,10 +26,12 @@ const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
       setOpen(false);
     } else {
       toast.error(state.message || "Failed to submit request");
+      setFormKey((key) => key + 1);
     }
   }, [state]);
 
   const errors = state && !state.success ? state.errors : undefined;
+  const values = state && !state.success ? state.values : undefined;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -39,7 +42,7 @@ const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
         <DialogHeader>
           <DialogTitle>Request to Rent</DialogTitle>
         </DialogHeader>
-        <form action={action} className="space-y-4">
+        <form key={formKey} action={action} className="space-y-4">
           <input type="hidden" name="propertyId" value={propertyId} />
           <div className="space-y-1">
             <Label htmlFor="startDate">Move-in date</Label>
@@ -47,6 +50,7 @@ const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
               id="startDate"
               name="startDate"
               type="date"
+              defaultValue={values?.startDate}
               aria-invalid={!!errors?.startDate}
             />
             {errors?.startDate && (
@@ -59,7 +63,7 @@ const RequestToRentDialog = ({ propertyId }: { propertyId: string }) => {
               id="months"
               name="months"
               type="number"
-              defaultValue={1}
+              defaultValue={values?.months ?? "1"}
               aria-invalid={!!errors?.months}
             />
             {errors?.months && (

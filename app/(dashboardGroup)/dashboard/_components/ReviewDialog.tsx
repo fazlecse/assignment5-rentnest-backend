@@ -22,6 +22,7 @@ const ReviewDialog = ({
   propertyTitle: string;
 }) => {
   const [open, setOpen] = useState(false);
+  const [formKey, setFormKey] = useState(0);
   const [state, action, pending] = useActionState(submitReviewAction, null);
 
   useEffect(() => {
@@ -31,10 +32,12 @@ const ReviewDialog = ({
       setOpen(false);
     } else {
       toast.error(state.message || "Failed to submit review");
+      setFormKey((key) => key + 1);
     }
   }, [state]);
 
   const errors = state && !state.success ? state.errors : undefined;
+  const values = state && !state.success ? state.values : undefined;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -45,14 +48,14 @@ const ReviewDialog = ({
         <DialogHeader>
           <DialogTitle>Review {propertyTitle}</DialogTitle>
         </DialogHeader>
-        <form action={action} className="space-y-4">
+        <form key={formKey} action={action} className="space-y-4">
           <input type="hidden" name="propertyId" value={propertyId} />
           <div className="space-y-1">
             <Label htmlFor="rating">Rating</Label>
             <select
               id="rating"
               name="rating"
-              defaultValue="5"
+              defaultValue={values?.rating ?? "5"}
               aria-invalid={!!errors?.rating}
               className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none"
             >
@@ -72,6 +75,7 @@ const ReviewDialog = ({
               id="comment"
               name="comment"
               rows={4}
+              defaultValue={values?.comment}
               aria-invalid={!!errors?.comment}
             />
             {errors?.comment && (

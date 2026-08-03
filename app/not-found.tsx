@@ -10,8 +10,12 @@ export default function NotFound() {
         The page you&apos;re looking for doesn&apos;t exist or may have been
         moved.
       </p>
-      <Button asChild className="mt-2">
-        <Link href="/">Return Home</Link>
+      <Button
+        nativeButton={false}
+        render={<Link href="/" />}
+        className="mt-2"
+      >
+        Return Home
       </Button>
     </div>
   );

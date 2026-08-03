@@ -5,16 +5,24 @@ import { revalidateTag } from "next/cache";
 import { reviewSchema } from "@/lib/validations/review.schema";
 import { formatZodErrors } from "@/lib/validations/formatZodErrors";
 
+export type ReviewFormValues = { rating: string; comment: string };
+
 type ReviewActionState = {
   success: boolean;
   message: string;
   errors?: Record<string, string>;
+  values?: ReviewFormValues;
 } | null;
 
 export const submitReviewAction = async (
   prevState: ReviewActionState,
   formData: FormData,
 ) => {
+  const values: ReviewFormValues = {
+    rating: (formData.get("rating") as string) ?? "",
+    comment: (formData.get("comment") as string) ?? "",
+  };
+
   const parsed = reviewSchema.safeParse({
     propertyId: formData.get("propertyId"),
     rating: Number(formData.get("rating")),
@@ -26,6 +34,7 @@ export const submitReviewAction = async (
       success: false,
       message: "Please fix the errors below",
       errors: formatZodErrors(parsed.error),
+      values,
     };
   }
 
@@ -49,5 +58,6 @@ export const submitReviewAction = async (
   return {
     success: !!result.success,
     message: result.message || "Failed to submit review",
+    values,
   };
 };

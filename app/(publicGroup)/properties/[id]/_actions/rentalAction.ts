@@ -4,16 +4,24 @@ import { cookies } from "next/headers";
 import { rentalRequestSchema } from "@/lib/validations/rental.schema";
 import { formatZodErrors } from "@/lib/validations/formatZodErrors";
 
+export type RentalFormValues = { startDate: string; months: string };
+
 type RequestRentalState = {
   success: boolean;
   message: string;
   errors?: Record<string, string>;
+  values?: RentalFormValues;
 } | null;
 
 export const requestRentalAction = async (
   prevState: RequestRentalState,
   formData: FormData,
 ) => {
+  const values: RentalFormValues = {
+    startDate: (formData.get("startDate") as string) ?? "",
+    months: (formData.get("months") as string) ?? "",
+  };
+
   const parsed = rentalRequestSchema.safeParse({
     propertyId: formData.get("propertyId"),
     startDate: formData.get("startDate"),
@@ -25,6 +33,7 @@ export const requestRentalAction = async (
       success: false,
       message: "Please fix the errors below",
       errors: formatZodErrors(parsed.error),
+      values,
     };
   }
 
@@ -44,5 +53,6 @@ export const requestRentalAction = async (
   return {
     success: !!result.success,
     message: result.message || "Something went wrong",
+    values,
   };
 };
