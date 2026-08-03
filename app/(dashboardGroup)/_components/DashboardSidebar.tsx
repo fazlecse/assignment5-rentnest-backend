@@ -52,7 +52,7 @@ export default function DashboardSidebar() {
   }
 
   return (
-    <Sidebar className="h-[calc(100svh-0rem)] border-r border-sidebar-border">
+    <Sidebar className="top-16 h-[calc(100svh-4rem)] border-r border-sidebar-border">
       {/* <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
@@ -76,6 +76,7 @@ export default function DashboardSidebar() {
                   <SidebarMenuButton
                     render={<Link href={item.href} onClick={handleNavigate} />}
                     isActive={pathname === item.href}
+                    className="h-auto rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground data-active:bg-accent data-active:text-accent-foreground data-active:font-medium"
                   >
                     <item.icon />
                     <span>{item.label}</span>
