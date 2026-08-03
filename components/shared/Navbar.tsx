@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { logout } from "@/app/service/logout";
@@ -72,6 +80,61 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+        {/* Mobile nav */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger
+              render={<Button variant="ghost" size="icon" />}
+            >
+              <Menu className="size-5" />
+              <span className="sr-only">Open menu</span>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <SheetHeader>
+                <SheetTitle>RentNest</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-1 px-4">
+                {navLinks.map((link) => (
+                  <SheetClose
+                    key={link.href}
+                    nativeButton={false}
+                    render={<Link href={link.href} />}
+                    className="rounded-md px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  >
+                    {link.label}
+                  </SheetClose>
+                ))}
+                <div className="my-2 border-t" />
+                {user.success ? (
+                  <>
+                    <SheetClose
+                      nativeButton={false}
+                      render={<Link href={dashboardHref} />}
+                      className="rounded-md px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
+                      Dashboard
+                    </SheetClose>
+                    <SheetClose
+                      onClick={handleLogout}
+                      className="rounded-md px-3 py-2 text-left text-sm font-medium text-destructive transition-colors hover:bg-accent"
+                    >
+                      Sign out
+                    </SheetClose>
+                  </>
+                ) : (
+                  <SheetClose
+                    nativeButton={false}
+                    render={<Link href="/login" />}
+                    className="rounded-md px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  >
+                    Login
+                  </SheetClose>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+
         <ThemeToggle />
         {/* User dropdown */}
         {user.success ? (

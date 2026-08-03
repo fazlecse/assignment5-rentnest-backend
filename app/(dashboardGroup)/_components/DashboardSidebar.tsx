@@ -9,6 +9,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { ISidebarItem } from "@/lib/types";
 import { Newspaper } from "lucide-react";
@@ -33,6 +34,11 @@ import { useAuth } from "@/context/AuthContext";
 export default function DashboardSidebar() {
   const user = useAuth();
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleNavigate = () => {
+    if (isMobile) setOpenMobile(false);
+  };
 
   // const navItems = sidebarMenuItems.USER;
 
@@ -46,10 +52,7 @@ export default function DashboardSidebar() {
   }
 
   return (
-    <Sidebar
-      collapsible="none"
-      className=" h-[calc(100svh-0rem)] border-r border-sidebar-border"
-    >
+    <Sidebar className="h-[calc(100svh-0rem)] border-r border-sidebar-border">
       {/* <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
@@ -71,7 +74,7 @@ export default function DashboardSidebar() {
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
-                    render={<Link href={item.href} />}
+                    render={<Link href={item.href} onClick={handleNavigate} />}
                     isActive={pathname === item.href}
                   >
                     <item.icon />
